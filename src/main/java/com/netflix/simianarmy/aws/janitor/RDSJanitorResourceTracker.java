@@ -103,7 +103,7 @@ public class RDSJanitorResourceTracker implements JanitorResourceTracker {
 		return email;
 	}
 
-	public StringBuilder buildAddQuery(Resource resource) {
+	public StringBuilder buildAddQuery() {
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("insert into ").append(table);
@@ -125,7 +125,7 @@ public class RDSJanitorResourceTracker implements JanitorResourceTracker {
 		return sb;
 	}
 
-	public StringBuilder buildUpdateQuery(Resource resource) {
+	public StringBuilder buildUpdateQuery() {
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("update ").append(table).append(" set ");
@@ -161,8 +161,7 @@ public class RDSJanitorResourceTracker implements JanitorResourceTracker {
 			return;
 		}
 		if (orig == null) {
-			StringBuilder sb = new StringBuilder();
-			sb = buildAddQuery(resource);
+			StringBuilder sb = buildAddQuery();
 			LOGGER.debug(String.format("Insert statement is '%s'", sb));
 			int updated = this.jdbcTemplate.update(sb.toString(), resource.getId(),
 					value(resource.getResourceType().toString()), value(resource.getRegion()),
@@ -173,8 +172,7 @@ public class RDSJanitorResourceTracker implements JanitorResourceTracker {
 					value(resource.getMarkTime()), value(resource.isOptOutOfJanitor()), json);
 			LOGGER.debug(String.format("%d rows inserted", updated));
 		} else {
-			StringBuilder sb = new StringBuilder();
-			sb = buildUpdateQuery(resource);
+			StringBuilder sb = buildUpdateQuery();
 			LOGGER.debug(String.format("Update statement is '%s'", sb));
 			int updated = this.jdbcTemplate.update(sb.toString(), resource.getResourceType().toString(),
 					value(resource.getRegion()), emailValue(resource.getOwnerEmail()), value(resource.getDescription()),
